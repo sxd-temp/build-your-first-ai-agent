@@ -1,0 +1,9 @@
+# Pinned to the exact versions validated for this workshop (June 2026).
+# These are known-good together — do not loosen them the night before a cohort.
+# To refresh after a clean test boot:  pip freeze > requirements.lock
+crewai[google-genai]==1.14.4
+crewai-tools==1.14.4
+streamlit==1.57.0
+python-dotenv==1.2.2
+fpdf2==2.8.7
+ddgs==9.14.4

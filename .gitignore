@@ -1,0 +1,18 @@
+# Secrets & env — NEVER commit your API key
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Generated memos
+output/*
+!output/.gitkeep
+
+# OS / editor
+.DS_Store
+.ipynb_checkpoints/
