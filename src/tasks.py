@@ -6,12 +6,14 @@ A Task = a `description` (what to do) + an `expected_output` (the shape of the
 answer) + the `agent` that owns it.
 
   • build_bull_task → ✅ DONE for you (your worked example)
-  • build_bear_task → 🔨 TODO (Hour 2): mirror the bull task, but argue the opposite
+  • build_bear_task → 🔨 TODO (Lab 2): mirror the bull task, but argue the opposite
   • build_memo_task → ✅ PROVIDED (the memo's structure is long, so it's given)
 
-Stuck or behind? The full answer is in  solutions/tasks.py
+Stuck? Ask in your breakout room — we'll work through it together at the regroup.
 """
 from crewai import Task, Agent
+
+from . import todo_guard
 
 
 def _idea_block(idea: str, customer: str, advantage: str, budget: str) -> str:
@@ -28,7 +30,10 @@ def _idea_block(idea: str, customer: str, advantage: str, budget: str) -> str:
 def build_bull_task(
     agent: Agent, idea: str, customer: str, advantage: str, budget: str
 ) -> Task:
-    """✅ WORKED EXAMPLE — research the strongest evidence-backed case FOR the idea."""
+    """✅ WORKED EXAMPLE (read this in Lab 1) — the strongest evidence-backed case FOR the idea.
+
+    In Lab 2 you'll mirror this to write the Bear task.
+    """
     return Task(
         description=(
             f"Build the strongest evidence-backed BULL CASE for this startup idea.\n\n"
@@ -61,25 +66,28 @@ def build_bull_task(
 def build_bear_task(
     agent: Agent, idea: str, customer: str, advantage: str, budget: str
 ) -> Task:
-    """🔪 🔨 TODO (Hour 2) — the mirror of the bull task: the strongest case AGAINST.
+    """🔪 🔨 TODO (Lab 2) — the mirror of the bull task: the strongest case AGAINST.
 
-    Write a `description` that tells the Skeptic to research:
-      1. Existing incumbents / well-funded competitors
-      2. Failed predecessors (find post-mortems if possible)
-      3. Structural risks: distribution, unit economics, CAC, regulation
-      4. Why customers might say they want it but never actually pay
-      5. Why the founder's stated 'advantage' might not matter at scale
-
-    And an `expected_output` shaped like a `# 🔪 Bear Case` brief with a Sources list.
-    (Tip: open build_bull_task above and mirror its shape.)
+    Fill in the `description` (what to research to argue the idea will fail) and the
+    `expected_output` (the shape of the bear-case brief). The bull task above is your
+    template — mirror its shape, including how it passes the idea details to the agent.
+    The app stays paused until you replace every "TODO".  See README → Lab 2.
     """
-    return Task(
-        description=(
-            f"TODO (Hour 2): write the BEAR CASE instructions here. "
-            f"Mirror build_bull_task, but argue the opposite. "
-            f"Remember to include:\n{_idea_block(idea, customer, advantage, budget)}"
+    # 🔨 Lab 2: write your own description + expected_output. (Removing every "TODO" unlocks the app.)
+    description = "TODO"
+    expected_output = "TODO"
+
+    todo_guard(
+        description, expected_output,
+        message=(
+            "🔪 Lab 2 isn't finished yet — open src/tasks.py → build_bear_task and write the "
+            "description + expected_output (mirror build_bull_task). See README → Lab 2."
         ),
-        expected_output="TODO: a Markdown brief titled '# 🔪 Bear Case' with sections + a numbered Sources list.",
+    )
+
+    return Task(
+        description=description,
+        expected_output=expected_output,
         agent=agent,
     )
 

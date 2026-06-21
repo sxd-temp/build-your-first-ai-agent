@@ -6,15 +6,16 @@ Three agents share the SAME LLM but produce very different output because their
 role / goal / backstory differ. That difference IS the lesson of this workshop.
 
   • build_optimist   → ✅ DONE for you (your worked example — read it closely)
-  • build_skeptic    → 🔨 TODO (Hour 2): mirror the Optimist, but make it pessimistic
-  • build_strategist → 🔨 TODO (Hour 3): the synthesizer — note it has NO tools
+  • build_skeptic    → 🔨 TODO (Lab 2): mirror the Optimist, but make it pessimistic
+  • build_strategist → 🔨 TODO (Lab 3): the synthesizer — note it has NO tools
 
-Stuck or behind? The full answer is in  solutions/agents.py
+Stuck? Ask in your breakout room — we'll work through it together at the regroup.
 """
 from crewai import Agent, LLM
 from crewai_tools import ScrapeWebsiteTool
 
 from .tools import DuckDuckGoSearchTool
+from . import todo_guard
 
 
 def _make_llm(model: str, temperature: float) -> LLM:
@@ -22,7 +23,10 @@ def _make_llm(model: str, temperature: float) -> LLM:
 
 
 def build_optimist(model: str, temperature: float, max_search_results: int) -> Agent:
-    """🚀  ✅ WORKED EXAMPLE — hunts for tailwinds and reasons this could win."""
+    """🚀  ✅ WORKED EXAMPLE (read this in Lab 1) — hunts for tailwinds and reasons this could win.
+
+    This is your template: in Lab 2 you'll mirror it to build the Skeptic.
+    """
     return Agent(
         role="Ex-VC Associate & Bull Case Builder",
         goal=(
@@ -46,18 +50,30 @@ def build_optimist(model: str, temperature: float, max_search_results: int) -> A
 
 
 def build_skeptic(model: str, temperature: float, max_search_results: int) -> Agent:
-    """🔪  🔨 TODO (Hour 2) — the mirror image of the Optimist: find why it FAILS.
+    """🔪  🔨 TODO (Lab 2) — the mirror image of the Optimist: find why it FAILS.
 
-    Fill in role / goal / backstory below. Keep tools and everything else the
-    same as the Optimist — the Skeptic also needs to search the web.
-
-    💡 Suggested role text (this keeps the live agent-card animation working):
-        "Serial Founder & Devil's Advocate"
+    Fill in the role / goal / backstory below in your own words — make this agent
+    hunt for why the idea won't work. Keep the tools and everything else like the
+    Optimist (it also searches the web). The app stays paused until you replace
+    every "TODO".  See README → Lab 2.
     """
+    # 🔨 Lab 2: write your own role / goal / backstory. (Removing every "TODO" unlocks the app.)
+    role = "TODO"
+    goal = "TODO"
+    backstory = "TODO"
+
+    todo_guard(
+        role, goal, backstory,
+        message=(
+            "🔪 Lab 2 isn't finished yet — open src/agents.py → build_skeptic and "
+            "rewrite the TODO role / goal / backstory. See README → Lab 2."
+        ),
+    )
+
     return Agent(
-        role="TODO: who is this agent?  (suggested: 'Serial Founder & Devil's Advocate')",
-        goal="TODO: prove this idea will FAIL — incumbents, failed predecessors, why customers won't pay. Cite every claim with a URL.",
-        backstory="TODO: 2-3 sentences. A founder with scars who spots the patterns others refuse to see. Brutally honest, never cruel.",
+        role=role,
+        goal=goal,
+        backstory=backstory,
         tools=[DuckDuckGoSearchTool(max_results=max_search_results), ScrapeWebsiteTool()],
         llm=_make_llm(model, temperature),
         verbose=True,
@@ -67,19 +83,32 @@ def build_skeptic(model: str, temperature: float, max_search_results: int) -> Ag
 
 
 def build_strategist(model: str, temperature: float) -> Agent:
-    """🎯  🔨 TODO (Hour 3) — reads BOTH cases and writes the final memo.
+    """🎯  🔨 TODO (Lab 3) — reads BOTH cases and writes the final memo.
 
     Notice the difference: this agent has NO tools. It doesn't search — it
     THINKS, using what the other two agents already found. That is the
     "synthesis" role in a multi-agent system.
 
-    💡 Suggested role text (keeps the live agent-card animation working):
-        "Founding Partner & Memo Writer"
+    Fill in its role / goal / backstory below in your own words. The app stays
+    paused until you replace every "TODO".  See README → Lab 3.
     """
+    # 🔨 Lab 3: write your own role / goal / backstory. (Removing every "TODO" unlocks the app.)
+    role = "TODO"
+    goal = "TODO"
+    backstory = "TODO"
+
+    todo_guard(
+        role, goal, backstory,
+        message=(
+            "🎯 Lab 3 isn't finished yet — open src/agents.py → build_strategist and "
+            "rewrite the TODO role / goal / backstory (keep tools=[]). See README → Lab 3."
+        ),
+    )
+
     return Agent(
-        role="TODO: who is this agent?  (suggested: 'Founding Partner & Memo Writer')",
-        goal="TODO: read the bull + bear cases, weigh the evidence, and write a decision-grade memo.",
-        backstory="TODO: 2-3 sentences. A YC-style partner who has written hundreds of memos and cuts through hype on both sides.",
+        role=role,
+        goal=goal,
+        backstory=backstory,
         tools=[],  # ← the synthesizer has NO tools. Leave this list empty.
         llm=_make_llm(model, temperature),
         verbose=True,

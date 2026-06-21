@@ -1,10 +1,12 @@
-"""Hour 1 — Your very first agent.
+"""Lab 1 — Your very first agent (provided & complete).
 
-Run this to watch ONE AI agent take a goal, decide to search the web, and
-write an answer. This is the whole idea of an "agent" in ~25 lines:
-a role + a goal + a backstory + a tool + a task.
+This agent already works. Your Lab 1 job is to READ it, understand the four
+pieces every agent has — a role + a goal + a backstory + a tool — then make it
+your own by changing its personality. Reading and improving working code is a
+core skill, especially now that AI writes so much of it.
 
-Run it:  python hello_agent.py
+Run it in the terminal:  python hello_agent.py
+Test it in a web UI:     streamlit run test_apps/lab1_meet_your_agent.py
 """
 import os
 
@@ -20,6 +22,8 @@ QUESTION = "What are the 3 biggest AI agent trends in 2026? Cite your sources."
 
 
 # --- The agent: who it is + what it's for ---
+# 🔨 TODO (Lab 1): make this agent your own — rewrite its role / goal / backstory
+#                  below, then re-run to hear its "voice" change.
 researcher = Agent(
     role="Research Assistant",
     goal=(

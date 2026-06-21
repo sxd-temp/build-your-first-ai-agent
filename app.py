@@ -1,8 +1,9 @@
 """Streamlit UI for the CrewAI Startup Idea Validator.
 
 ✅ PROVIDED — this is the full, polished app (the "after" picture). You run it
-   and deploy it; you do NOT need to type it. In Hour 4 we read `app_minimal.py`
-   together to see the smallest version, then run THIS one for the real thing.
+   and deploy it; you do NOT need to type it. In Hour 4 we read
+   `test_apps/lab4_minimal_app.py` together to see the smallest version, then run
+   THIS one for the real thing.
 
    Run it:  streamlit run app.py
 """
@@ -19,6 +20,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from src.crew import build_crew
+from src import LabTODO
 from src.pdf import markdown_to_pdf_bytes
 from src.streaming import capture_stdout_stderr
 from src.theme import agent_cards, hero, inject_css, verdict_pill
@@ -52,15 +54,24 @@ def strip_code_fences(md: str) -> str:
     return md
 
 
-def detect_active_agent(log: str) -> tuple[str | None, set[str]]:
+def detect_active_agent(log: str, roles: list[str] | None = None) -> tuple[str | None, set[str]]:
     """Parse the live log tail to figure out which agent is currently working.
 
     Returns (active_agent_name, set_of_done_agent_names).
+
+    Uses the crew's ACTUAL agent roles when available (passed in as
+    [optimist_role, skeptic_role, strategist_role]) so the animation works no
+    matter what role text a student writes; falls back to the reference roles.
     """
-    # CrewAI prints role names in its verbose logs. We look for the role strings.
-    optimist_markers = ["Ex-VC Associate", "Bull Case Builder"]
-    skeptic_markers = ["Serial Founder", "Devil's Advocate"]
-    strategist_markers = ["Founding Partner", "Memo Writer"]
+    # CrewAI prints each agent's role in its verbose logs. We look for those strings.
+    if roles and len(roles) >= 3:
+        optimist_markers = [roles[0]]
+        skeptic_markers = [roles[1]]
+        strategist_markers = [roles[2]]
+    else:
+        optimist_markers = ["Ex-VC Associate", "Bull Case Builder"]
+        skeptic_markers = ["Serial Founder", "Devil's Advocate"]
+        strategist_markers = ["Founding Partner", "Memo Writer"]
 
     def last_index(markers: list[str]) -> int:
         idx = -1
@@ -230,6 +241,12 @@ def run_crew_threaded(params: dict, result_box: dict):
             temperature=params["temperature"],
             max_search_results=params["max_results"],
         )
+        # Expose the agents' actual roles so the live animation can track them
+        # no matter what role text the student wrote.
+        try:
+            result_box["roles"] = [a.role for a in crew.agents]
+        except Exception:  # noqa: BLE001
+            result_box["roles"] = None
         crew_output = crew.kickoff()
         # Collect outputs from each task
         task_outputs = []
@@ -239,6 +256,9 @@ def run_crew_threaded(params: dict, result_box: dict):
             task_outputs = [str(crew_output)]
         result_box["task_outputs"] = task_outputs
         result_box["final"] = str(crew_output)
+    except LabTODO as e:
+        # A lab isn't finished — not a crash, just a prompt to fill something in.
+        result_box["todo"] = str(e)
     except Exception as e:  # noqa: BLE001
         result_box["error"] = f"{type(e).__name__}: {e}"
     finally:
@@ -288,7 +308,7 @@ if submitted and idea.strip():
                 last_len = len(current)
                 log_placeholder.code(current[-12000:], language="text")
                 # Update agent cards based on the log
-                active, done = detect_active_agent(current)
+                active, done = detect_active_agent(current, result_box.get("roles"))
                 if active != last_active:
                     last_active = active
                     with agent_cards_slot.container():
@@ -300,7 +320,10 @@ if submitted and idea.strip():
             with agent_cards_slot.container():
                 agent_cards(active=None, done={"optimist", "skeptic", "strategist"})
 
-    if "error" in result_box:
+    if "todo" in result_box:
+        status.update(label="🔨 One step left — finish the current lab", state="error")
+        st.session_state.error_msg = result_box["todo"]
+    elif "error" in result_box:
         status.update(label=f"❌ Failed: {result_box['error']}", state="error")
         st.session_state.error_msg = result_box["error"]
     else:
@@ -417,7 +440,13 @@ if (st.session_state.memo_md or st.session_state.bull_md) and not st.session_sta
             st.info("No bear case available.")
 
 elif st.session_state.error_msg and not st.session_state.running:
-    st.error(f"Last run failed: {st.session_state.error_msg}")
+    msg = st.session_state.error_msg
+    if msg.lstrip().startswith(("🔨", "🔪", "🎯")):
+        # A lab isn't finished yet — show the instructions as a gentle prompt.
+        st.warning(msg)
+        st.caption("Finish the step above, save, then click **Validate Idea** again.")
+    else:
+        st.error(f"Last run failed: {msg}")
 
 elif not st.session_state.running:
     st.info(
