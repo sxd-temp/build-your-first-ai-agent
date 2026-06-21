@@ -74,8 +74,25 @@ def build_bear_task(
     The app stays paused until you replace every "TODO".  See README → Lab 2.
     """
     # 🔨 Lab 2: write your own description + expected_output. (Removing every "TODO" unlocks the app.)
-    description = "TODO"
-    expected_output = "TODO"
+    description = (
+        f"Build the strongest evidence-backed BEAR CASE against this startup idea.\n\n"
+        f"{_idea_block(idea, customer, advantage, budget)}\n\n"
+        f"Use the search and scrape tools to research:\n"
+        f"1. Market weakness signals — small market size, slow growth, weak adoption, low willingness to pay, or poor monetization.\n"
+        f"2. Customer resistance — complaints, low urgency, poor retention, pricing pushback, or weak product-market fit.\n"
+        f"3. Competitive pressure — strong incumbents, crowded categories, easy copycats, or better existing alternatives.\n"
+        f"4. Execution risk — unclear distribution, high customer acquisition cost, regulatory hurdles, or operational complexity.\n\n"
+        f"Be skeptical and evidence-driven. Cite every claim with a URL. If you cannot find evidence for a concern, say so instead of fabricating."
+    )
+    expected_output = (
+        "A structured Markdown brief titled `# 🔥 Bear Case` with these sections:\n"
+        "- **Top Reasons It Will Fail** (3-5 bullets, each ending with a source link)\n"
+        "- **Market Weakness** (bulleted evidence with URLs)\n"
+        "- **Customer Resistance** (quotes/links showing lack of urgency, friction, or poor demand)\n"
+        "- **Competitive Threats** (incumbents, alternatives, imitation risk)\n"
+        "- **Execution Risks** (distribution, pricing, operations, regulatory)\n"
+        "- **Sources** (numbered list of all URLs)"
+    )
 
     todo_guard(
         description, expected_output,
